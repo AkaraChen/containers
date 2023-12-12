@@ -1,0 +1,57 @@
+name: langflow
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+env:
+  TARGET_VERSION: null
+  BUILD_DIR: ./packages/langflow
+
+jobs:
+  langflow-docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: |
+          pnpm install
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - uses: actions/setup-python@v4
+        with:
+          cache: 'pip'
+      - name: Run Check Script
+        id: check
+        continue-on-error: true
+        run: |
+          echo "TARGET_VERSION=$(pnpm tsx ${{ env.BUILD_DIR }}/check.ts)" >> $GITHUB_ENV
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        if: steps.check.outputs.result == 'true' || github.event_name == 'workflow_dispatch'
+        with:
+          context: ${{ env.BUILD_DIR }}
+          push: true
+          tags: akarachan/langflow:${{ env.TARGET_VERSION }}
+      - name: Build and push latest
+        uses: docker/build-push-action@v5
+        if: steps.check.outputs.result == 'true' || github.event_name == 'workflow_dispatch'
+        with:
+          context: ${{ env.BUILD_DIR }}
+          push: true
+          tags: akarachan/langflow:latest
