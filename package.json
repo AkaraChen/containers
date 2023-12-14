@@ -1,14 +1,8 @@
 {
   "name": "containers",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "fmt": "prettier --write ./packages/**/*.ts ./**/*.{json,yaml,yml} !pnpm-lock.yaml"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "tsx": "^4.6.2"
   },

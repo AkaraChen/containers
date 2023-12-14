@@ -18,6 +18,8 @@ importers:
 
   packages/langflow: {}
 
+  packages/shared: {}
+
 packages:
 
   /@esbuild/android-arm64@0.18.20:
