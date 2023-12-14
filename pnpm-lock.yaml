@@ -4,21 +4,15 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-importers:
+dependencies:
+  tsx:
+    specifier: ^4.6.2
+    version: 4.6.2
 
-  .:
-    dependencies:
-      tsx:
-        specifier: ^4.6.2
-        version: 4.6.2
-    devDependencies:
-      zx:
-        specifier: ^7.2.3
-        version: 7.2.3
-
-  packages/langflow: {}
-
-  packages/shared: {}
+devDependencies:
+  zx:
+    specifier: ^7.2.3
+    version: 7.2.3
 
 packages:
 

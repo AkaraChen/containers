@@ -1,12 +1,13 @@
 {
-  "name": "containers",
-  "scripts": {
-    "fmt": "prettier --write ./packages/**/*.ts ./**/*.{json,yaml,yml} !pnpm-lock.yaml"
-  },
-  "dependencies": {
-    "tsx": "^4.6.2"
-  },
-  "devDependencies": {
-    "zx": "^7.2.3"
-  }
+    "name": "containers",
+    "type": "module",
+    "scripts": {
+        "fmt": "prettier --write ./containers/**/*.ts ./**/*.{json,yaml,yml} !pnpm-lock.yaml .prettierrc"
+    },
+    "dependencies": {
+        "tsx": "^4.6.2"
+    },
+    "devDependencies": {
+        "zx": "^7.2.3"
+    }
 }

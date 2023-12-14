@@ -1,41 +1,41 @@
 name: langflow
 
 on:
-  schedule:
-    - cron: "0 0 * * *"
-  workflow_dispatch:
-  push:
-    branches:
-      - main
-    paths:
-      - "packages/langflow/**"
-      - "packages/shared/**"
+    schedule:
+        - cron: "0 0 * * *"
+    workflow_dispatch:
+    push:
+        branches:
+            - main
+        paths:
+            - "containers/langflow/**"
+            - "actions/**"
 
 env:
-  TARGET_VERSION: null
-  BUILD_DIR: ./packages/langflow
+    TARGET_VERSION: null
+    BUILD_DIR: ./containers/langflow
 
 jobs:
-  langflow-docker:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Set up environment
-        uses: ./packages/shared/setup-action
-        with:
-          dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
-      - uses: actions/setup-python@v4
-        with:
-          python-version: "3.9"
-      - name: Run check
-        id: check
-        continue-on-error: true
-        run: |
-          echo "TARGET_VERSION=$(pnpm tsx ${{ env.BUILD_DIR }}/check.ts)" >> $GITHUB_ENV
-      - name: Build and push Docker image
-        uses: ./packages/shared/docker-build-push
-        if: steps.check.outputs.result == 'true' || github.event_name == 'workflow_dispatch'
-        with:
-          context: ${{ env.BUILD_DIR }}
-          name: akarachan/langflow
-          target_version: ${{ env.TARGET_VERSION }}
+    langflow-docker:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+            - name: Set up environment
+              uses: ./actions/setup-action
+              with:
+                  dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
+            - uses: actions/setup-python@v4
+              with:
+                  python-version: "3.9"
+            - name: Run check
+              id: check
+              continue-on-error: true
+              run: |
+                  echo "TARGET_VERSION=$(pnpm tsx ${{ env.BUILD_DIR }}/check.ts)" >> $GITHUB_ENV
+            - name: Build and push Docker image
+              uses: ./actions/docker-build-push
+              if: steps.check.outputs.result == 'true' || github.event_name == 'workflow_dispatch'
+              with:
+                  context: ${{ env.BUILD_DIR }}
+                  name: akarachan/langflow
+                  target_version: ${{ env.TARGET_VERSION }}

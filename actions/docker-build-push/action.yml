@@ -1,0 +1,23 @@
+name: Docker build and push
+description: Build and push Docker images
+inputs:
+    context:
+        description: The build context
+        default: .
+    target_version:
+        description: The target version
+        required: true
+    name:
+        description: The name of the image
+        required: true
+runs:
+    using: composite
+    steps:
+        - name: Build and push
+          uses: docker/build-push-action@v2
+          with:
+              context: ${{ inputs.context }}
+              push: true
+              tags: |
+                  ${{ inputs.name }}:latest
+                  ${{ inputs.name }}:${{ inputs.target_version }}
